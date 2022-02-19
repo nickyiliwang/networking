@@ -10,8 +10,8 @@ S1 - Architecture
 2. Services✔
 3. Topologies✔
 4. Infrastructures✔
-5. Addressing
-6. Routing
+5. Addressing✔
+6. Routing (BIG)
 7. Cloud and Virtualization Tech
 8. Implementing Networks
 
@@ -25,7 +25,7 @@ S3 - Security
 
 
 
-1. Vulnerabilities and Threats
+1. Vulnerabilities and Threats (BIG)
 2. Firewalls
 3. Network Access Control
 
@@ -34,17 +34,17 @@ S4 - Troubleshooting
 
 
 1. Troubleshooting Methodology
-2. Tools
-3. Network issues
-4. Security Issues
-5. WAN Issues
+2. Tools (BIG)
+3. Network issues (BIG)
+4. Security Issues (BIG)
+5. WAN Issues (BIG)
 
 S5 - Industry Standards, Practices, and Network Theory
 
 
 
 1. OSI Model
-2. Theory and Concepts
+2. Theory and Concepts (BIG)
 3. Ports and Protocols
 4. Application Ports and Protocols
 
@@ -64,6 +64,8 @@ S6 - Cryptography and PKI
 
 
 1. Public Key Infra
+
+
 
 #S1 - Architecture - Remote Access
 
@@ -94,9 +96,9 @@ PPP
 
 
 
-* Authentication, compression, error detection, multilink, **no encryption**
+* Authentication, compression, error detection, multilink, no encryption
 * Physical networking: telephone lines, mobile phone, serial cables
-* L2 with only modem, **needs more functionality for remote access over IP**
+* L2 with only modem, needs more functionality for remote access over IP
 
 PPTP (PP Tunneling)
 
@@ -144,9 +146,7 @@ TACACS/+
 * With accounting and auditing to this authentication protocol
 * TACACS+: more requests and authorization capabilities. 
 
-##RAS/RRAS
-
-RAS (Remote Access Services)/RRAS(Routing and Remote Access Service )
+##RAS (Remote Access Services) / RRAS(Routing and Remote Access Service)
 
 
 
@@ -168,7 +168,7 @@ Singular method of communication for voice/phone communication
 
 Manages multiple  access points: logging, security, provision, performance
 
-Software or hardware: **single pane of glass**.
+Software or hardware: single pane of glass.
 
 
 
@@ -241,9 +241,9 @@ Rules:
 
 
 
-1. **A/AAAA**: manage which IP addresses are assigned to a particular machine, or if the IPs are fixed.
-2. **CNAME: **alias one name to another name, and you don’t need other records (such as MX records for emails) for the same name.  Doesn’t work on zone apex (naked domain)
-3. **ALIAS: **if you’re trying to alias the root domain (zone apex), or if you need other records for the same name. In AWS routes traffic to selected AWS resources. Can create at zone apex.
+1. A/AAAA: manage which IP addresses are assigned to a particular machine, or if the IPs are fixed.
+2. CNAME: alias one name to another name, and you don’t need other records (such as MX records for emails) for the same name.  Doesn’t work on zone apex (naked domain)
+3. ALIAS: if you’re trying to alias the root domain (zone apex), or if you need other records for the same name. In AWS routes traffic to selected AWS resources. Can create at zone apex.
 
 ##Dynamic DNS
 
@@ -344,8 +344,6 @@ Applications:
 
 #S1 - Architecture - Network Infrastructures
 
-WAN, MAN, LAN, WLAN, PAN
-
 PAN (Personal Area Network)
 
 
@@ -353,6 +351,10 @@ PAN (Personal Area Network)
 * Bluetooth, hotspots, mouse and keyboards
 
 LAN (Local Area Network)
+
+
+
+* 
 
 WLAN (Wireless LAN)
 
@@ -392,3 +394,247 @@ Byte or 8 bits, or octet
 No need to subnet, so we use /64 often
 
 Ipv4 shortage
+
+You can remove leading 0s
+
+##IPV6 address config
+
+NDP (Neighbor discovery protocol)
+
+
+
+* No broadcasts, uses multicast instead
+* Neighbor MAC Discovery, unlike ARP in IPV4
+* Auto configure of IP address without DHCP (SLAAC)
+* Discover routers with RS and RA
+* DAD (Duplicate Address Detection)
+
+Link-local address
+
+
+
+* works on your local subnet, talk to local devices
+* starts with fe80
+
+DHCPv6
+
+
+
+* similar process with IPv4 but with multicast
+* Ie. voice over IP configuration detail \
+
+
+##IPV6 Interoperability
+
+Translating between IPV4 to IPV6 and vice versa
+
+
+
+* Requires relay routers
+* 6to4 no support for NAT
+* Dual-stack can run both
+
+
+
+##IPv4 Classes
+
+we know where the next step is to communicate with you with our routing and we let the routers handle the rest of that communication
+
+Subnetting
+
+
+
+1. IP Address and Subnet Mask
+    1. Must combine. Network + Host
+    2. Subnet Mask => what network it belongs
+2. Default gateway
+    3. We need to know the router IP to communicate outside of our subnet
+
+Classful subnetting (Legacy, retired)
+
+
+
+* The subnet mask was something set automatically based on your IP address.
+* Static structure and no configuration of sizes of network
+*  A: 255.0.0.0 | B: 255.255.0.0 | C: 255.255.255.0
+
+Private addresses
+
+
+
+* RFC 1918 addresses 
+* 10.0.0.0 ~ 10.255.255.255 = 1 Class A = 16 million+ addresses
+* 172.16.0.0 ~ 172.31.255.255 = 16 Class Bs
+* 192.168.0.0 ~ 192.168.255.255 = 256 Class Cs
+
+
+
+##CIDR (Classless Inter Domain Routing)
+
+
+
+1. Class based subnets were inflexible, the jumps between classes were too dramatic 
+2. CIDR Subnet masks did not have to end on a single octet
+3. Create a flexible subnetting scheme for the right amount of IP address space.
+
+CIDR Notation (end on octet) 
+
+Ie. 192.168.1.1/24
+
+
+
+* Subnet mask of 255.255.255.0 (3 x 8)
+* 192.168.1.0 ~ 192.168.1.255 = 254 hosts per subnet, 256 minus .0(network address) and .255(broadcast address)
+
+Ie. 10.1.0.1/16
+
+
+
+* Subnet mask of 255.255.0.0 (2 x 8)
+* 10.1.0.0 ~ 10.1.255.255 = 65’534 addresses per subnet
+
+CIDR Notation (does not end on octet)
+
+Ie. 10.1.0.1/26
+
+
+
+* Subnet mask of 255.255.255.192 (128 + 64)
+* 10.1.0.0 ~ 10.1.0.63, 62 addresses minus .0(network address) and .64(broadcast address)
+
+
+
+#IP Subnetting
+
+**Important don’t forget to subtract the network and broadcast address. Ie. 256 - 2 = 254
+
+
+<table>
+  <tr>
+   <td>subnet
+   </td>
+   <td>1
+   </td>
+   <td>2
+   </td>
+   <td>4
+   </td>
+   <td>8
+   </td>
+   <td>16
+   </td>
+   <td>32
+   </td>
+   <td>64
+   </td>
+   <td>128
+   </td>
+   <td>256
+   </td>
+  </tr>
+  <tr>
+   <td>host
+   </td>
+   <td>256
+   </td>
+   <td>128
+   </td>
+   <td>64
+   </td>
+   <td>32
+   </td>
+   <td>16
+   </td>
+   <td>8
+   </td>
+   <td>4
+   </td>
+   <td>2
+   </td>
+   <td>1
+   </td>
+  </tr>
+  <tr>
+   <td>subnet mask
+   </td>
+   <td>/24
+   </td>
+   <td>/25
+   </td>
+   <td>/26
+   </td>
+   <td>/27
+   </td>
+   <td>/28
+   </td>
+   <td>/29
+   </td>
+   <td>/30
+   </td>
+   <td>/31
+   </td>
+   <td>/32
+   </td>
+  </tr>
+</table>
+
+
+Q: CIDR 192.168.1.0/24 and split it into 4 networks to support 40 devices
+
+A: /26 and have 62 useable hosts in 4 networks 1 ~ 62, 65 ~ 126, 129 ~ 190, 192 ~ 254
+
+
+
+##APIPA  (Automatic Private IP Address / link-local address)
+
+
+
+* Device local subnet comms in the absence of a DHCP server
+* 169.254.1.0 ~ 169.254.254.255. **169.254 gives aways its APIPA
+* OS uses ARP to check for duplicate IP address in the local network
+
+##Unicast, Multicast and Broadcast
+
+Unicast
+
+
+
+* 1 to 1
+* Web surfing, file transfer
+
+Broadcast
+
+
+
+* Send one packet to everyone on the network
+* ARP, Routing updates
+* Not used in IPV6
+
+Multicast (IPV6)
+
+
+
+* One to many, but specific group
+* Multimedia, stock exchanges
+* Specialized and difficult to scale
+
+##Broadcast Domain and Collision Domain
+
+Collision Domain (Legacy)
+
+
+
+* 2 devices communicated at the same time and corrupted data
+* Ie. 2 people talking at the same time in a conference call
+* L2 Switches solves this issue with MAC headers, CSMA/CD]
+
+Broadcast Domain
+
+
+
+* ARP probes / OS notifications
+* Passes switch and stops at the Router
+
+
+
+#S1 - Architecture - Routing
